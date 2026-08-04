@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamPull - Ultimate YouTube Downloader</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <div class="background-glow">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+        <div class="glow-orb orb-3"></div>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fa-brands fa-youtube logo-icon"></i>
+                <span class="logo-text">Stream<span class="highlight">Pull</span></span>
+            </div>
+            <p class="tagline">Download any YouTube Video or Audio instantly in High Quality (1080p, 4K, MP3)</p>
+        </header>
+
+        <!-- Main Card -->
+        <main class="main-card">
+            <!-- Mode Switcher Tabs -->
+            <div class="mode-switcher">
+                <button type="button" class="mode-btn active" id="modeYoutube" data-mode="youtube">
+                    <i class="fa-brands fa-youtube"></i>
+                    <span>YouTube Downloader</span>
+                </button>
+                <button type="button" class="mode-btn" id="modeAnySite" data-mode="anysite">
+                    <i class="fa-solid fa-globe"></i>
+                    <span>Any Site Video URL</span>
+                </button>
+            </div>
+
+            <!-- Supported Sites Pills -->
+            <div class="supported-pills">
+                <span class="pill-badge active-pill" id="pillYoutube"><i class="fa-brands fa-youtube"></i> YouTube</span>
+                <span class="pill-badge"><i class="fa-brands fa-facebook"></i> Facebook</span>
+                <span class="pill-badge"><i class="fa-brands fa-instagram"></i> Instagram</span>
+                <span class="pill-badge"><i class="fa-brands fa-tiktok"></i> TikTok</span>
+                <span class="pill-badge"><i class="fa-brands fa-x-twitter"></i> Twitter/X</span>
+                <span class="pill-badge"><i class="fa-brands fa-vimeo-v"></i> Vimeo</span>
+                <span class="pill-badge"><i class="fa-solid fa-play"></i> 1000+ Sites</span>
+            </div>
+
+            <!-- Search / URL Form -->
+            <div class="search-box">
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-link input-icon"></i>
+                    <input type="text" id="youtubeUrl" placeholder="Paste YouTube link here... (e.g. https://www.youtube.com/watch?v=...)" autocomplete="off">
+                    <button type="button" id="clearBtn" class="icon-btn" title="Clear">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <button type="button" id="fetchBtn" class="btn primary-btn">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span>Fetch Video</span>
+                </button>
+            </div>
+
+            <!-- Error Notification -->
+            <div id="errorAlert" class="alert error-alert hidden">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span id="errorMessage">An error occurred while fetching video details.</span>
+            </div>
+
+            <!-- Loader -->
+            <div id="loadingState" class="loading-box hidden">
+                <div class="spinner"></div>
+                <p>Analyzing video link & fetching formats...</p>
+            </div>
+
+            <!-- Video Info Preview Card -->
+            <div id="videoCard" class="video-card hidden">
+                <div class="video-preview">
+                    <div class="thumbnail-wrapper">
+                        <img id="videoThumbnail" src="" alt="Video Thumbnail">
+                        <span id="videoDuration" class="duration-badge">00:00</span>
+                    </div>
+                    <div class="video-meta">
+                        <h2 id="videoTitle" class="video-title">Video Title Goes Here</h2>
+                        <div class="channel-info">
+                            <i class="fa-solid fa-circle-user"></i>
+                            <span id="videoChannel">Channel Name</span>
+                        </div>
+                        <div class="view-info">
+                            <i class="fa-solid fa-eye"></i>
+                            <span id="videoViews">0 views</span>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="divider">
+
+                <!-- Format Selection Tabs -->
+                <div class="format-selection">
+                    <div class="tabs">
+                        <button type="button" class="tab-btn active" data-tab="videoTab">
+                            <i class="fa-solid fa-video"></i> Video (MP4)
+                        </button>
+                        <button type="button" class="tab-btn" data-tab="audioTab">
+                            <i class="fa-solid fa-music"></i> Audio Only (MP3)
+                        </button>
+                    </div>
+
+                    <!-- Video Tab Content -->
+                    <div id="videoTab" class="tab-content active">
+                        <label for="videoQualitySelect" class="label">Select Quality:</label>
+                        <select id="videoQualitySelect" class="custom-select">
+                            <!-- Populated via JS -->
+                        </select>
+                    </div>
+
+                    <!-- Audio Tab Content -->
+                    <div id="audioTab" class="tab-content hidden">
+                        <label for="audioFormatSelect" class="label">Select Audio Format:</label>
+                        <select id="audioFormatSelect" class="custom-select">
+                            <option value="mp3">MP3 High Quality (320kbps)</option>
+                            <option value="m4a">M4A Audio</option>
+                            <option value="wav">WAV Uncompressed</option>
+                        </select>
+                    </div>
+
+                    <!-- Download Trigger Button -->
+                    <button type="button" id="downloadBtn" class="btn download-btn">
+                        <i class="fa-solid fa-download"></i>
+                        <span>Start Download</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Progress Overlay / Card -->
+            <div id="progressCard" class="progress-card hidden">
+                <div class="progress-header">
+                    <span id="progressStatusText"><i class="fa-solid fa-cloud-arrow-down spin"></i> Downloading...</span>
+                    <span id="progressPercent" class="percent-badge">0%</span>
+                </div>
+                
+                <div class="progress-bar-bg">
+                    <div id="progressBarFill" class="progress-bar-fill" style="width: 0%;"></div>
+                </div>
+
+                <div class="progress-meta">
+                    <span><i class="fa-solid fa-bolt"></i> Speed: <strong id="downloadSpeed">0 B/s</strong></span>
+                    <span><i class="fa-solid fa-clock"></i> ETA: <strong id="downloadEta">Calculating...</strong></span>
+                </div>
+
+                <!-- Final Ready Button -->
+                <div id="completedActions" class="completed-actions hidden">
+                    <div class="success-banner">
+                        <i class="fa-solid fa-circle-check"></i> Download Completed Successfully!
+                    </div>
+                    <a id="saveFileBtn" href="#" download class="btn save-btn">
+                        <i class="fa-solid fa-file-arrow-down"></i> Save File to Computer
+                    </a>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>StreamPull YouTube Downloader &bull; Powered by Python & yt-dlp</p>
+        </footer>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

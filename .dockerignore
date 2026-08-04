@@ -1,0 +1,7 @@
+venv/
+ffmpeg.exe
+downloads/
+__pycache__/
+*.pyc
+.git
+.gitignore
