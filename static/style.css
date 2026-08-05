@@ -582,4 +582,223 @@ body {
     text-align: center;
     color: var(--text-muted);
     font-size: 0.85rem;
+    padding: 10px 0;
+}
+
+/* ==========================================
+   Responsive Design & Mobile Optimizations
+   ========================================== */
+
+@media (max-width: 640px) {
+    body {
+        padding: 12px 10px;
+        align-items: flex-start;
+    }
+
+    .container {
+        gap: 16px;
+        max-width: 100%;
+    }
+
+    /* Header Mobile */
+    .header {
+        padding: 10px 0 4px 0;
+    }
+
+    .logo {
+        font-size: 1.8rem;
+        gap: 8px;
+    }
+
+    .logo-icon {
+        font-size: 2.1rem;
+    }
+
+    .tagline {
+        font-size: 0.88rem;
+        line-height: 1.35;
+        padding: 0 4px;
+    }
+
+    /* Main Card Mobile */
+    .main-card {
+        padding: 16px 14px;
+        border-radius: 16px;
+        gap: 16px;
+    }
+
+    /* Mode Switcher Mobile */
+    .mode-switcher {
+        padding: 4px;
+        gap: 6px;
+    }
+
+    .mode-btn {
+        padding: 10px 8px;
+        font-size: 0.85rem;
+        gap: 6px;
+        border-radius: 8px;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .mode-btn span {
+        white-space: nowrap;
+    }
+
+    .mode-btn i {
+        font-size: 1rem;
+    }
+
+    /* Supported Pills Mobile */
+    .supported-pills {
+        gap: 6px;
+        padding-bottom: 4px;
+        margin: 0 -2px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .pill-badge {
+        padding: 5px 10px;
+        font-size: 0.76rem;
+    }
+
+    /* Search Box Mobile */
+    .search-box {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .input-wrapper {
+        min-width: 100%;
+        width: 100%;
+    }
+
+    .input-wrapper input {
+        padding: 13px 38px 13px 38px;
+        font-size: 0.88rem;
+        border-radius: 10px;
+    }
+
+    .input-icon {
+        left: 12px;
+        font-size: 0.95rem;
+    }
+
+    .icon-btn {
+        right: 8px;
+        font-size: 0.95rem;
+        padding: 4px;
+    }
+
+    .primary-btn {
+        width: 100%;
+        padding: 13px 18px;
+        font-size: 0.95rem;
+        border-radius: 10px;
+    }
+
+    /* Video Card Preview Mobile */
+    .video-preview {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 14px;
+    }
+
+    .thumbnail-wrapper {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        aspect-ratio: 16 / 9;
+    }
+
+    .video-meta {
+        align-items: center;
+        width: 100%;
+        gap: 8px;
+    }
+
+    .video-title {
+        font-size: 1rem;
+        text-align: center;
+    }
+
+    .channel-info, .view-info {
+        justify-content: center;
+        font-size: 0.82rem;
+    }
+
+    /* Format Selection Mobile */
+    .tabs {
+        gap: 4px;
+        padding: 4px;
+    }
+
+    .tab-btn {
+        padding: 10px 6px;
+        font-size: 0.82rem;
+        gap: 5px;
+    }
+
+    .custom-select {
+        padding: 12px 14px;
+        font-size: 0.88rem;
+        border-radius: 10px;
+    }
+
+    .download-btn {
+        padding: 14px 18px;
+        font-size: 0.95rem;
+        border-radius: 10px;
+    }
+
+    /* Progress Card Mobile */
+    .progress-card {
+        padding: 14px 12px;
+        border-radius: 12px;
+        gap: 12px;
+    }
+
+    .progress-header {
+        font-size: 0.9rem;
+    }
+
+    .percent-badge {
+        font-size: 0.78rem;
+        padding: 3px 8px;
+    }
+
+    .progress-meta {
+        font-size: 0.8rem;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .success-banner {
+        padding: 10px 12px;
+        font-size: 0.88rem;
+    }
+
+    .save-btn {
+        padding: 13px 18px;
+        font-size: 0.92rem;
+        border-radius: 10px;
+    }
+}
+
+@media (max-width: 380px) {
+    .mode-switcher {
+        flex-direction: column;
+    }
+
+    .mode-btn {
+        padding: 9px 12px;
+        justify-content: center;
+    }
+
+    .logo {
+        font-size: 1.6rem;
+    }
 }

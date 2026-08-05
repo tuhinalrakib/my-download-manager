@@ -4,6 +4,7 @@ import uuid
 import threading
 import time
 import shutil
+import urllib.parse
 from flask import Flask, render_template, request, jsonify, send_from_directory
 from flask_cors import CORS
 import yt_dlp
@@ -31,20 +32,27 @@ def get_ffmpeg_path():
         return local_ffmpeg_bin
     return False # Not installed
 
-def clear_downloads_folder():
+def clear_old_downloads(max_age_seconds=3600):
+    """Deletes downloaded files older than max_age_seconds (default: 1 hour)."""
     if os.path.exists(DOWNLOAD_DIR):
+        now = time.time()
         for filename in os.listdir(DOWNLOAD_DIR):
             file_path = os.path.join(DOWNLOAD_DIR, filename)
             try:
                 if os.path.isfile(file_path) or os.path.islink(file_path):
-                    os.unlink(file_path)
+                    if now - os.path.getmtime(file_path) > max_age_seconds:
+                        os.unlink(file_path)
                 elif os.path.isdir(file_path):
-                    shutil.rmtree(file_path)
+                    if now - os.path.getmtime(file_path) > max_age_seconds:
+                        shutil.rmtree(file_path)
             except Exception as e:
                 print(f"Error deleting file {file_path}: {e}")
 
 def clean_filename(title):
-    return re.sub(r'[\\/*?:"<>|]', '', title)
+    # Strip URL-unsafe and OS-unsafe characters including # % & + | \ / * ? : " < >
+    cleaned = re.sub(r'[\\/*?:"<>|#%&+\n\r]', '', title)
+    cleaned = re.sub(r'\s+', ' ', cleaned).strip()
+    return cleaned or 'video'
 
 def clean_error_message(err):
     err_str = str(err)
@@ -57,13 +65,12 @@ def clean_error_message(err):
 
 @app.route('/')
 def index():
-    clear_downloads_folder()
-    tasks.clear()
+    clear_old_downloads()
     return render_template('index.html')
 
 @app.route('/api/clear', methods=['POST'])
 def clear_downloads_api():
-    clear_downloads_folder()
+    clear_old_downloads(max_age_seconds=0)
     tasks.clear()
     return jsonify({'status': 'cleared', 'message': 'All download history and files cleared.'})
 
@@ -329,12 +336,25 @@ def run_download(task_id, url, format_type, quality_id):
                     filename = f"{base}.mp4"
 
             final_basename = os.path.basename(filename)
+            safe_basename = clean_filename(final_basename)
+            
+            if safe_basename != final_basename:
+                new_path = os.path.join(DOWNLOAD_DIR, safe_basename)
+                try:
+                    if os.path.exists(new_path):
+                        os.remove(new_path)
+                    os.rename(os.path.join(DOWNLOAD_DIR, final_basename), new_path)
+                    final_basename = safe_basename
+                except Exception as rename_err:
+                    print(f"Rename error: {rename_err}")
+
+            encoded_basename = urllib.parse.quote(final_basename)
 
             tasks[task_id].update({
                 'status': 'completed',
                 'progress': '100%',
                 'filename': final_basename,
-                'download_url': f'/api/file/{final_basename}'
+                'download_url': f'/api/file/{encoded_basename}'
             })
     except Exception as e:
         tasks[task_id].update({
@@ -377,9 +397,20 @@ def get_progress(task_id):
     return jsonify(task)
 
 
-@app.route('/api/file/<filename>', methods=['GET'])
+@app.route('/api/file/<path:filename>', methods=['GET'])
 def download_file(filename):
-    return send_from_directory(DOWNLOAD_DIR, filename, as_attachment=True)
+    decoded_filename = urllib.parse.unquote(filename)
+    file_path = os.path.join(DOWNLOAD_DIR, decoded_filename)
+
+    if not os.path.exists(file_path):
+        for item in os.listdir(DOWNLOAD_DIR):
+            if item == decoded_filename or urllib.parse.unquote(item) == decoded_filename:
+                decoded_filename = item
+                break
+        else:
+            return jsonify({'error': 'File not found or expired.'}), 404
+
+    return send_from_directory(DOWNLOAD_DIR, decoded_filename, as_attachment=True)
 
 
 if __name__ == '__main__':

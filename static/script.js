@@ -32,9 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentVideoUrl = '';
     let pollingInterval = null;
 
-    // Auto-clear downloads folder on page reload
-    fetch('/api/clear', { method: 'POST' }).catch(() => {});
-
     // Mode Switcher (YouTube vs Any Site URL)
     const modeBtns = document.querySelectorAll('.mode-btn');
     let currentMode = 'youtube';
