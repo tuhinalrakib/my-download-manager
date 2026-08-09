@@ -1,0 +1,16 @@
+# Netscape HTTP Cookie File
+# http://curl.haxx.se/rfc/cookie_spec.html
+# This file was generated automatically by My Download Manager
+
+.youtube.com	TRUE	/	TRUE	1801854263	__Secure-YNID	20.YT=bU8FKNBGsKYAawKdHVa0VkyBprBnr46fCtdjbiFJW67W7P6e9WKsqq3JzdWd0cubOkPVFnbKyuLCP2NlnVxy2ok4UgGe2dfUVEob2fFbLIAD5oGvpGE34tglkdi_8jmtxa33laq0Eh7a6MU84mFZ2Ek-2XqPsV8mJFg5lcKyLDLyyFSWWaUOwNkP2dWt05GuODrswllE3H667kJ7DtU8acuH_GZlvuzO43fWweQHo6yXsP8uhqL2nYIs3LDwgGcLZmnUyj7Q80AW6EFKXfebQzAn7IS7MnvM4izH0tKJz0GtH_gg1Vb1hLv0Pmm_AokdVJ6uGTquLDErcqovq337OA
+.youtube.com	TRUE	/	TRUE	1801854265	VISITOR_INFO1_LIVE	MJrFvaPO7w0
+.youtube.com	TRUE	/	TRUE	1801854265	VISITOR_PRIVACY_METADATA	CgJCRBIEGgAgaA%3D%3D
+.youtube.com	TRUE	/	TRUE	1820864212	PREF	f6=40000000&tz=Asia.Dhaka&f5=30000&f7=100&repeat=NONE&autoplay=true&guide_collapsed=true
+.youtube.com	TRUE	/	TRUE	1817840079	__Secure-1PSIDTS	sidts-CjUBPWEu2cZiZQR6dQxZcoWIl80CE29BV1cWK2nkJkBFAO9VzVsuI2Sbmhg3rBzWjZNSBXW8phAA
+.youtube.com	TRUE	/	TRUE	1817840079	__Secure-3PSIDTS	sidts-CjUBPWEu2cZiZQR6dQxZcoWIl80CE29BV1cWK2nkJkBFAO9VzVsuI2Sbmhg3rBzWjZNSBXW8phAA
+.youtube.com	TRUE	/	FALSE	1818404038	HSID	AYtQwX8i3koTiM75x
+.youtube.com	TRUE	/	TRUE	1818404038	SSID	AAOYswANF_3t3es72
+.youtube.com	TRUE	/	FALSE	1818404038	APISID	EMh4dH18jb1PJE1w/AnVkFGmfif4Yafzvz
+.youtube.com	TRUE	/	TRUE	1818404038	SAPISID	Mu7oIs-WHFR2sPlp/AzdjF4Yy55S1p9BlB
+.youtube.com	TRUE	/	TRUE	1818404038	__Secure-1PAPISID	Mu7oIs-WHFR2sPlp/AzdjF4Yy55S1p9BlB
+.youtube.com	TRUE	/	TRUE	1818404038	__Secure-3PAPISID	Mu7oIs-WHFR2sPlp/AzdjF4Yy55S1p9BlB

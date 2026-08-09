@@ -20,14 +20,27 @@ os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 tasks = {}
 
 def init_cookies():
-    """Generates cookies.txt from YOUTUBE_COOKIES environment variable if provided."""
+    """Generates and formats cookies.txt from YOUTUBE_COOKIES env variable if provided."""
     cookie_env = os.environ.get('YOUTUBE_COOKIES')
     cookie_path = os.path.join(BASE_DIR, 'cookies.txt')
     if cookie_env:
         try:
+            lines = cookie_env.strip().splitlines()
+            formatted = ["# Netscape HTTP Cookie File"]
+            for line in lines:
+                l_str = line.strip()
+                if not l_str or l_str.startswith('#') or 'Include Subdomains' in l_str:
+                    continue
+                parts = re.split(r'\t+|\s{2,}', l_str)
+                if len(parts) >= 6:
+                    if len(parts) == 6:
+                        parts.append('')
+                    formatted.append('\t'.join(parts[:7]))
+                elif '\t' in l_str:
+                    formatted.append(l_str)
             with open(cookie_path, 'w', encoding='utf-8') as f:
-                f.write(cookie_env)
-            print("Successfully initialized cookies.txt from YOUTUBE_COOKIES env var!")
+                f.write('\n'.join(formatted))
+            print("Successfully initialized formatted cookies.txt from YOUTUBE_COOKIES env var!")
         except Exception as e:
             print(f"Failed to write YOUTUBE_COOKIES: {e}")
 
