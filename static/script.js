@@ -208,13 +208,27 @@ document.addEventListener('DOMContentLoaded', () => {
                     clearInterval(pollingInterval);
                     progressBarFill.style.width = '100%';
                     progressPercent.textContent = '100%';
-                    progressStatusText.innerHTML = `<i class="fa-solid fa-check"></i> Finished!`;
+                    progressStatusText.innerHTML = `<i class="fa-solid fa-circle-check"></i> Finished! Starting download to your device...`;
                     downloadSpeed.textContent = 'Complete';
                     downloadEta.textContent = '0s';
 
                     saveFileBtn.href = task.download_url;
                     completedActions.classList.remove('hidden');
                     downloadBtn.disabled = false;
+
+                    // Automatically trigger file download directly to PC / Mobile device
+                    try {
+                        const autoDownloadLink = document.createElement('a');
+                        autoDownloadLink.href = task.download_url;
+                        if (task.filename) {
+                            autoDownloadLink.setAttribute('download', task.filename);
+                        }
+                        document.body.appendChild(autoDownloadLink);
+                        autoDownloadLink.click();
+                        document.body.removeChild(autoDownloadLink);
+                    } catch (e) {
+                        console.log('Auto-download trigger blocked by browser or failed:', e);
+                    }
                 } else if (task.status === 'failed') {
                     clearInterval(pollingInterval);
                     showError(task.error || 'Download failed during extraction.');
@@ -243,4 +257,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pollingInterval) clearInterval(pollingInterval);
         downloadBtn.disabled = false;
     }
+
+    // Auto-clear server temporary files when page reloads or closes
+    window.addEventListener('beforeunload', () => {
+        if (navigator.sendBeacon) {
+            navigator.sendBeacon('/api/clear');
+        }
+    });
 });

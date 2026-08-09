@@ -32,18 +32,22 @@ def get_ffmpeg_path():
         return local_ffmpeg_bin
     return False # Not installed
 
-def clear_old_downloads(max_age_seconds=3600):
-    """Deletes downloaded files older than max_age_seconds (default: 1 hour)."""
+def clear_old_downloads(max_age_seconds=0):
+    """Deletes downloaded files older than max_age_seconds (default 0 for instant cleanup), preserving active task files."""
     if os.path.exists(DOWNLOAD_DIR):
         now = time.time()
+        # Protect files belonging to active running tasks
+        active_task_ids = [t_id[:6] for t_id, task in tasks.items() if task.get('status') in ['starting', 'downloading', 'processing']]
+        
         for filename in os.listdir(DOWNLOAD_DIR):
+            if any(t_id in filename for t_id in active_task_ids):
+                continue
             file_path = os.path.join(DOWNLOAD_DIR, filename)
             try:
-                if os.path.isfile(file_path) or os.path.islink(file_path):
-                    if now - os.path.getmtime(file_path) > max_age_seconds:
+                if now - os.path.getmtime(file_path) >= max_age_seconds:
+                    if os.path.isfile(file_path) or os.path.islink(file_path):
                         os.unlink(file_path)
-                elif os.path.isdir(file_path):
-                    if now - os.path.getmtime(file_path) > max_age_seconds:
+                    elif os.path.isdir(file_path):
                         shutil.rmtree(file_path)
             except Exception as e:
                 print(f"Error deleting file {file_path}: {e}")
@@ -61,6 +65,8 @@ def clean_error_message(err):
     # Remove repetitive ERROR: or [download] prefixes
     clean = re.sub(r'^ERROR:\s*', '', clean, flags=re.IGNORECASE)
     clean = re.sub(r'^\[download\]\s*Got error:\s*', '', clean, flags=re.IGNORECASE)
+    if 'Unsupported URL' in clean:
+        clean += ' | Tip: MovieBox / 123movienow links load dynamically with JS. Try inspecting F12 -> Network tab for direct .m3u8 stream links and paste that URL instead.'
     return clean.strip()
 
 @app.route('/')
@@ -91,6 +97,7 @@ def get_info():
         'socket_timeout': 30,
         'retries': 10,
         'nocheckcertificate': True,
+        'js_runtimes': ['node', 'deno'],
         'http_headers': {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -261,6 +268,7 @@ def run_download(task_id, url, format_type, quality_id):
         'fragment_retries': 20,
         'skip_unavailable_fragments': True,
         'nocheckcertificate': True,
+        'js_runtimes': ['node', 'deno'],
         'http_headers': {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -406,14 +414,31 @@ def download_file(filename):
         for item in os.listdir(DOWNLOAD_DIR):
             if item == decoded_filename or urllib.parse.unquote(item) == decoded_filename:
                 decoded_filename = item
+                file_path = os.path.join(DOWNLOAD_DIR, item)
                 break
         else:
             return jsonify({'error': 'File not found or expired.'}), 404
 
-    return send_from_directory(DOWNLOAD_DIR, decoded_filename, as_attachment=True)
+    response = send_from_directory(DOWNLOAD_DIR, decoded_filename, as_attachment=True)
+
+    @response.call_on_close
+    def remove_file():
+        def delayed_delete():
+            time.sleep(3) # Wait 3s for browser download stream to complete
+            try:
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+                    print(f"Cleaned server temp file after device download: {file_path}")
+            except Exception as e:
+                print(f"Error removing temp file {file_path}: {e}")
+
+        threading.Thread(target=delayed_delete, daemon=True).start()
+
+    return response
 
 
 if __name__ == '__main__':
+    clear_old_downloads(max_age_seconds=0)
     port = int(os.environ.get('PORT', 5000))
     print("=" * 60)
     print(f" YouTube Video Downloader Server Running on Port {port}!")
