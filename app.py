@@ -94,6 +94,8 @@ def clean_error_message(err):
     clean = re.sub(r'^\[download\]\s*Got error:\s*', '', clean, flags=re.IGNORECASE)
     if 'Unsupported URL' in clean:
         clean += ' | Tip: MovieBox / 123movienow links load dynamically with JS. Try inspecting F12 -> Network tab for direct .m3u8 stream links and paste that URL instead.'
+    elif 'Sign in to confirm' in clean:
+        clean += ' | Tip: Export valid YouTube cookies (with SID & LOGIN_INFO while logged in) and set YOUTUBE_COOKIES env var on Render.'
     return clean.strip()
 
 @app.route('/')
