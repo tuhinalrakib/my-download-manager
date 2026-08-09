@@ -98,12 +98,21 @@ def get_info():
         'retries': 10,
         'nocheckcertificate': True,
         'js_runtimes': {'node': {}, 'deno': {}},
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['android', 'mweb', 'ios', 'web']
+            }
+        },
         'http_headers': {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
             'Accept-Language': 'en-US,en;q=0.5',
         }
     }
+
+    cookie_path = os.path.join(BASE_DIR, 'cookies.txt')
+    if os.path.exists(cookie_path):
+        ydl_opts['cookiefile'] = cookie_path
 
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -269,12 +278,21 @@ def run_download(task_id, url, format_type, quality_id):
         'skip_unavailable_fragments': True,
         'nocheckcertificate': True,
         'js_runtimes': {'node': {}, 'deno': {}},
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['android', 'mweb', 'ios', 'web']
+            }
+        },
         'http_headers': {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
             'Accept-Language': 'en-US,en;q=0.5',
         }
     }
+
+    cookie_path = os.path.join(BASE_DIR, 'cookies.txt')
+    if os.path.exists(cookie_path):
+        network_opts['cookiefile'] = cookie_path
 
     if format_type == 'audio':
         ydl_opts = {
