@@ -97,7 +97,7 @@ def get_info():
         'socket_timeout': 30,
         'retries': 10,
         'nocheckcertificate': True,
-        'js_runtimes': ['node', 'deno'],
+        'js_runtimes': {'node': {}, 'deno': {}},
         'http_headers': {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -268,7 +268,7 @@ def run_download(task_id, url, format_type, quality_id):
         'fragment_retries': 20,
         'skip_unavailable_fragments': True,
         'nocheckcertificate': True,
-        'js_runtimes': ['node', 'deno'],
+        'js_runtimes': {'node': {}, 'deno': {}},
         'http_headers': {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
