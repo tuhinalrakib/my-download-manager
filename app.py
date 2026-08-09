@@ -19,6 +19,20 @@ os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 # In-memory download task tracking
 tasks = {}
 
+def init_cookies():
+    """Generates cookies.txt from YOUTUBE_COOKIES environment variable if provided."""
+    cookie_env = os.environ.get('YOUTUBE_COOKIES')
+    cookie_path = os.path.join(BASE_DIR, 'cookies.txt')
+    if cookie_env:
+        try:
+            with open(cookie_path, 'w', encoding='utf-8') as f:
+                f.write(cookie_env)
+            print("Successfully initialized cookies.txt from YOUTUBE_COOKIES env var!")
+        except Exception as e:
+            print(f"Failed to write YOUTUBE_COOKIES: {e}")
+
+init_cookies()
+
 def get_ffmpeg_path():
     # 1. Check if ffmpeg is in PATH
     if shutil.which('ffmpeg'):
@@ -100,7 +114,7 @@ def get_info():
         'js_runtimes': {'node': {}, 'deno': {}},
         'extractor_args': {
             'youtube': {
-                'player_client': ['android', 'mweb', 'ios', 'web']
+                'player_client': ['tv_embedded', 'android', 'ios', 'mweb', 'web']
             }
         },
         'http_headers': {
@@ -280,7 +294,7 @@ def run_download(task_id, url, format_type, quality_id):
         'js_runtimes': {'node': {}, 'deno': {}},
         'extractor_args': {
             'youtube': {
-                'player_client': ['android', 'mweb', 'ios', 'web']
+                'player_client': ['tv_embedded', 'android', 'ios', 'mweb', 'web']
             }
         },
         'http_headers': {
