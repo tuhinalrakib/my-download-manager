@@ -129,7 +129,7 @@ def get_info():
         'js_runtimes': {'node': {}, 'deno': {}},
         'extractor_args': {
             'youtube': {
-                'player_client': ['tv_embedded', 'android', 'ios', 'mweb', 'web']
+                'player_client': ['web', 'mweb', 'ios', 'android']
             }
         },
         'http_headers': {
@@ -309,7 +309,7 @@ def run_download(task_id, url, format_type, quality_id):
         'js_runtimes': {'node': {}, 'deno': {}},
         'extractor_args': {
             'youtube': {
-                'player_client': ['tv_embedded', 'android', 'ios', 'mweb', 'web']
+                'player_client': ['web', 'mweb', 'ios', 'android']
             }
         },
         'http_headers': {
